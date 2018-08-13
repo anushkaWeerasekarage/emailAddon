@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base target="_top">
+    <script>
+    
+   
+    
+       function sendMails() {
+          
+         var a = 0;
+         var row = 0;
+         var radios = document.getElementsByName("radio");
+     
+         for(var i = 0; i < radios.length; i++) {
+           if(radios[i].checked) {
+              a = radios[i].value;
+              break;
+           }
+         
+         }
+            //alert(a);  
+
+             //alert(google.script.run.test());
+             google.script.run.withSuccessHandler(function(r) {
+             
+               alert(r);
+               $("#formDiv").css("display","block");
+               $("#linkid").attr("href", r[0]);
+               row = r[1];
+               google.script.run.updateSheet(row);
+              
+             
+           }).withFailureHandler(function error(){Console.log("Fail");}).fetchRow(a);
+
+          
+         //google .script.run.fetchRow(a);
+        
+         //alert("Your email has been sent.");
+         //google .script.run.test2();
+        
+          
+       }
+       
+       //get the selected value from the drop down list
+       //send it to server and fetch the relevant id's
+       function sendDropValue(val) {
+           //var greeting = $('#dropValue').find(":selected").text();
+           //alert(val);
+           
+           google.script.run.withSuccessHandler(function(r) {
+             //alert(r);
+             $("#formDiv").css("display","none");
+             $("#radioList").empty();
+             for(var i = 0; i < r.length; i++) {
+              $("#radioList").append('<li><input type="radio" name="radio" class="radioL" value='+r[i]+'>' +r[i]+ '</li>');
+              //onclick="sendRadioValue(this.value)"
+
+             }
+           
+           }).withFailureHandler(function error(){Console.log("Fail");}).selectId(val);
+
+       }
+       
+       //send the selected id(radio button) value back to server
+       function sendRadioValue(v) {
+       
+           //alert(v);
+           google .script.run.fetchRow(v);
+           
+       }
+       
+       function updateSheetFunc() {
+           $("#formDiv").css("display","none");
+           $(".radioL").prop('checked', false);
+          //google.script.run.updateSheet(rowNo);
+       }
+      
+    </script>
+    <style>
+    
+    #formDiv {
+        display: none;
+    }
+    </style>
+  </head>
+  <body>
+  <div class="drop-down">
+   <? var listData = []; ?>
+   <? listData = dropdown(); ?>
+    <select id="dropValue" onchange="sendDropValue(this.value)">
+    <option value="" selected>Chose the team</option>
+   <? for(var i = 0; i < listData.length; i++) { ?>
+        <option value="<?= listData[i] ?>"><?= listData[i] ?></option>
+
+    <? } ?>
+    </select>
+    </div>
+    <br>
+    <div id="radioCon">
+    
+    <ul id="radioList" type="none">
+    
+    </ul>
+    
+    </div>
+    <div class="button-content">
+      <button type="button" onclick="sendMails()">Create form</button>
+    
+    </div>
+    <div id="formDiv">
+       <a href="" id="linkid" onclick="updateSheetFunc()">Click here to open the form</a>
+    </div>
+  </body>
+</html>
+
+
